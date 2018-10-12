@@ -90,14 +90,14 @@
 			}
 
 			function loadData(){
-				hourlyCost = 400;
+				hourlyCost = 40;
 				people = 4;
     			var ca = document.cookie.replace(" ", "").split(';');
 
     			for(var i = 0; i < ca.length; i++) {
         			c = ca[i].split("=");
         			if (c[0] == "hourlyCost") { hourlyCost = c[1]; }
-        			if (c[1] == "people"){ people = c[1]; }
+        			if (c[0] == "people"){ people = c[1]; }
 				}
 
 				document.getElementById("hourlyCost").value = hourlyCost;
