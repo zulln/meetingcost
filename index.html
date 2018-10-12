@@ -1,0 +1,120 @@
+
+<!--
+	https://github.com/zulln/meetingcost
+-->
+
+<html>
+	<head>
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="https://zulln.se/meetingcost/">
+		<meta property="og:title" content="meetingcost - what does the meeting cost">
+		<meta property="og:description" content="Get a number on what the meeting really cost">
+
+		<title>meetingcost</title>
+		<link id="favicon" rel="icon" type="image/png" href="favicon.png">
+		<style>
+			body {
+				background-color: #2bb6f2;
+				color: #1b4a5e;
+
+				font-family: Arial;
+				font-weight: bold;
+
+				text-align: center;
+			}
+
+			#r {
+				margin-top: 5%;
+				font-size: 250px;
+			}
+
+			button {
+				background-color: #1b4a5e;
+				color: #2bb6f2;
+				font-size: 40px;
+				border: none;
+			}
+
+			button:disabled {
+				background-color: #215f7a;
+			}
+
+			input {
+				font-size: 30px;
+				width: 100px;
+			}
+
+			#settings {
+				float: right;
+				margin: 2%;
+				bottom: 0;
+				position: fixed;
+				right: 0;
+			}
+
+		</style>
+	</head>
+	<body onload="loadData()">
+		<div id="r">0</div>
+
+		<script>
+			var time = 0;
+
+			async function updateValue(){
+				var cost = time * people * (hourlyCost/(3600*1000));
+				document.getElementById("r").innerText = parseInt(cost);
+			}
+
+			function start(){
+				document.getElementById("start").disabled = true;
+				document.getElementById("pause").disabled = false;
+				updateSetting();
+				handle = setInterval(function(){
+					time += 500;
+					updateValue();
+				}, 500);
+			}
+
+			function pause(){
+				clearInterval(handle);
+				document.getElementById("start").disabled = false;
+				document.getElementById("pause").disabled = true;
+			}
+
+			function updateSetting(){
+				hourlyCost = document.getElementById("hourlyCost").value;
+				people = document.getElementById("people").value;
+
+				document.cookie = "hourlyCost=" + hourlyCost;
+				document.cookie = "people=" + people;
+			}
+
+			function loadData(){
+				hourlyCost = 400;
+				people = 4;
+    			var ca = document.cookie.replace(" ", "").split(';');
+
+    			for(var i = 0; i < ca.length; i++) {
+        			c = ca[i].split("=");
+        			if (c[0] == "hourlyCost") { hourlyCost = c[1]; }
+        			if (c[1] == "people"){ people = c[1]; }
+				}
+
+				document.getElementById("hourlyCost").value = hourlyCost;
+				document.getElementById("people").value = people;
+			}
+
+		</script>
+
+		<button id="start" onclick="start()">&gt;</button>
+		<button id="pause" disabled onclick="pause()">||</button>
+
+
+		<br><br>
+		<div id="settings">
+			Hourly salary(remember taxes and stuff): <input id="hourlyCost" oninput="updateSetting()" type="number" value="">
+			People:<input id="people" oninput="updateSetting()" type="number" value="">
+		</div>
+
+	</body>
+</html>
